@@ -27,6 +27,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   });
 
+  // 🔹 Channel data (can add more later)
   const data = [
     {
       "channel_name": "Asia Cup Hindi",
@@ -71,12 +72,21 @@ document.addEventListener('DOMContentLoaded', async () => {
   video.volume = 0.8;
 
   const attemptAutoplay = async () => {
-    try { video.muted = false; await video.play(); } 
-    catch { video.muted = true; await video.play().catch(() => {}); }
+    try { 
+      video.muted = false; 
+      await video.play(); 
+    } catch { 
+      video.muted = true; 
+      await video.play().catch(() => {}); 
+    }
   };
 
-  try { await player.load(streamUrl); await attemptAutoplay(); } 
-  catch (error) { console.error('Load error:', error); }
+  try { 
+    await player.load(streamUrl); 
+    await attemptAutoplay(); 
+  } catch (error) { 
+    console.error('Load error:', error); 
+  }
 
   document.addEventListener('visibilitychange', () => {
     if (!document.hidden && video.paused) attemptAutoplay();
