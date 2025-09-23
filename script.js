@@ -30,13 +30,16 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   });
 
-  // Base64 Encoded Values
-  const drmKey = atob("MzFiMTNjNmYyNDEwNTVhYWE5NjUyNjNmMzExNWU2ODQ=");
-  const drmVal = atob("NjFmMGNiYzk1OTk5MjVhN2JlOTNkNDVlMzBiOGViZTk=");
-  const cookieHeader = atob("X19oZG5lYV9fPXN0PTE3NTg1NTc0MDV+ZXhwPTE3NTg2NDM4MDV+YWNsPS8qfmhtYWM9YTNhMDQyOTUxM2ZmNDI0YjQ1OWEzNWNhZTg1MWYwNDg3YTdlMmM4NDJjYTdhZDFjN2U5OTAwNGE1N2I1MjQ4OQ==");
-  const streamUrl = atob("aHR0cHM6Ly9qaW90dmJwa21vYi5jZG4uamlvLmNvbS9icGstdHYvQXNpYV9DdXBfSGluZGlfTU9CL1dEVkxpdmUvaW5kZXgubXBkP19faGRuZWFfXz1zdD0xNzU4NTU3NDA1fmV4cD0xNzU4NjQzODA1fmFjbD0vKn5obWFjPWEzYTA0Mjk1MTNmZjQyNGI0NTlhMzVjYWU4NTFmMDQ4N2E3ZTJjODQyY2E3YWQxYzdlOTkwMDRhNTdiNTI0ODk=");
+  // ✅ DRM Keys
+  let drmConfig = {
+    clearKeys: {
+      "31b13c6f241055aaa965263f3115e684": "61f0cbc9599925a7be93d45e30b8ebe9"
+    }
+  };
 
-  let drmConfig = { clearKeys: { [drmKey]: drmVal } };
+  let cookieHeader = "__hdnea__=st=1758557405~exp=1758643805~acl=/*~hmac=a3a0429513ff424b459a35cae851f0487a7e2c842ca7ad1c7e99004a57b52489";
+
+  let streamUrl = "https://jiotvbpkmob.cdn.jio.com/bpk-tv/Asia_Cup_Hindi_MOB/WDVLive/index.mpd?__hdnea__=st=1758557405~exp=1758643805~acl=/*~hmac=a3a0429513ff424b459a35cae851f0487a7e2c842ca7ad1c7e99004a57b52489";
 
   player.configure({
     drm: drmConfig,
@@ -45,13 +48,21 @@ document.addEventListener('DOMContentLoaded', async () => {
       bufferingGoal: 15,
       rebufferingGoal: 2,
       bufferBehind: 15,
-      retryParameters: { timeout: 10000, maxAttempts: 5, baseDelay: 300, backoffFactor: 1.2 },
+      retryParameters: {
+        timeout: 10000,
+        maxAttempts: 5,
+        baseDelay: 300,
+        backoffFactor: 1.2
+      },
       segmentRequestTimeout: 8000,
       segmentPrefetchLimit: 2,
       useNativeHlsOnSafari: true
     },
     manifest: {
-      retryParameters: { timeout: 8000, maxAttempts: 3 }
+      retryParameters: {
+        timeout: 8000,
+        maxAttempts: 3
+      }
     }
   });
 
@@ -70,20 +81,27 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   });
 
+  const enableAutoplay = () => {
+    video.setAttribute('autoplay', '');
+    video.setAttribute('playsinline', '');
+    video.autoplay = true;
+  };
+
   const attemptAutoplay = async () => {
     try {
       video.muted = false;
       await video.play();
       console.log('Unmuted autoplay successful');
       return true;
-    } catch {
+    } catch (error) {
+      console.log('Unmuted autoplay failed:', error.message);
       try {
         video.muted = true;
         await video.play();
         console.log('Muted autoplay successful');
         return true;
-      } catch (err) {
-        console.log('Autoplay failed:', err.message);
+      } catch (mutedError) {
+        console.log('Muted autoplay failed:', mutedError.message);
         return false;
       }
     }
@@ -93,14 +111,50 @@ document.addEventListener('DOMContentLoaded', async () => {
     console.error('Shaka Player Error:', event.detail);
   });
 
+  video.addEventListener('play', () => {
+    if (window.self === window.top && !document.fullscreenElement && window.innerWidth <= 768) {
+      container.requestFullscreen().catch(() => {
+        console.log('Fullscreen request failed');
+      });
+    }
+  }, { once: true });
+
+  video.addEventListener('loadedmetadata', () => {
+    video.volume = 0.8;
+  });
+
+  let hasUserInteracted = false;
+  const enableSoundOnInteraction = () => {
+    if (!hasUserInteracted && video.muted) {
+      video.muted = false;
+      hasUserInteracted = true;
+      console.log('Sound enabled after user interaction');
+    }
+  };
+  ['click', 'touchstart', 'keydown'].forEach(event => {
+    document.addEventListener(event, enableSoundOnInteraction, { once: true });
+  });
+
   try {
+    enableAutoplay();
     await player.load(streamUrl);
     if (video.readyState >= 3) {
       await attemptAutoplay();
     } else {
       video.addEventListener('canplay', attemptAutoplay, { once: true });
+      setTimeout(async () => {
+        if (video.paused) {
+          await attemptAutoplay();
+        }
+      }, 2000);
     }
   } catch (error) {
     console.error('Load error:', error);
   }
+
+  document.addEventListener('visibilitychange', () => {
+    if (!document.hidden && video.paused) {
+      attemptAutoplay();
+    }
+  });
 });
