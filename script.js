@@ -30,7 +30,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   });
 
-  // ✅ DRM Keys
+  // ✅ Use your DRM Key + MPD URL here
   let drmConfig = {
     clearKeys: {
       "31b13c6f241055aaa965263f3115e684": "61f0cbc9599925a7be93d45e30b8ebe9"
