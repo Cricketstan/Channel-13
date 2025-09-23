@@ -26,6 +26,7 @@ video {
   object-fit: contain;
 }
 
+/* Hide loading spinner */
 .shaka-spinner-container,
 .shaka-spinner,
 .shaka-spinner-svg {
