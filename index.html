@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Sony liv</title>
+  <title>Star Sports</title>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.7.11/shaka-player.ui.min.js" crossorigin="anonymous"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.7.11/controls.min.css" crossorigin="anonymous">
@@ -125,14 +125,14 @@
             'quality', 'fullscreen'
           ],
           volumeBarColors: {
-            base: 'rgba(63, 187, 1, 1)',
-            level: 'rgb(255, 69, 0)'
-          },
-          seekBarColors: {
-            base: 'rgb(41, 41, 163)',
-            buffered: 'rgb(35, 99, 3)',
-            played: 'rgba(63, 187, 1, 1)'
-          }
+  base: 'rgba(255, 0, 0, 0.6)',  // light red base
+  level: 'rgb(255, 0, 0)'        // bright red level
+},
+seekBarColors: {
+  base: 'rgba(255, 165, 0, 0.4)', // light orange base
+  buffered: 'rgba(255, 140, 0, 0.6)', // darker orange buffered part
+  played: 'rgb(255, 69, 0)'       // vivid orange-red for played portion
+}
         });
 
         let drmConfig = {
