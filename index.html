@@ -63,7 +63,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     fadeDelay: 3
   });
 
-  const STREAM_URL = 'https://a96aivottlinear-a.akamaihd.net/OTTB/iad-nitro/enc/qxk5zyrjbk/out/v1/8e8390608c054e7b92c91bc9e3e8f3f2/cenc.mpd';
+  const STREAM_URL = 'https://a96aivottlinear-a.akamaihd.net/OTTB/iad-nitro/enc/qxk5zyrjbk/out/v1/8e8390608c054e7b92c91bc9e3e8f3f2/cenc.mpd?hdntl=exp=1776067493~acl=%2f*~id=ddf19d4c-e79e-43fa-ac60-93421ab352f6~data=hdntl,aXA9NjUuMS45Mi4yMjImZXhwPTE3NzU5ODExMjMmZWlkPTgzNzkxNyZvaWQ9MjImdHlwZT1WT0QmdWlkPW51bGwmY2lkPW51bGwmcHQ9bnVsbA~hmac=857b1e7c88c1b3b67c44f918f41093f1f80f29822e34031873baceadb9a73496';
   const RAW_KEYS = '78e4283951bfc5fe2065a15ed15bf491:7269b0331df2093fc091df0325e69b47';
   const clearKeys = Object.fromEntries(
     RAW_KEYS.split(',').map(pair => pair.trim().split(':'))
